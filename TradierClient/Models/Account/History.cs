@@ -8,7 +8,13 @@ namespace Tradier.Client.Models.Account
     public class HistoryRootobject
     {
         [JsonProperty("history")]
-        public History History { get; set; }
+        public HistoryWithJson History { get; set; }
+    }
+
+    public class HistoryWithJson : History
+    {
+        [JsonIgnore]
+        public string Json { get; set; }
     }
 
     public class History

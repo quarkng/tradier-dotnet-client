@@ -8,7 +8,13 @@ namespace Tradier.Client.Models.Account
     public class PositionsRootobject
     {
         [JsonProperty("positions")] 
-        public Positions Positions { get; set; }
+        public PositionsWithJson Positions { get; set; }
+    }
+
+    public class PositionsWithJson : Positions
+    {
+        [JsonIgnore]
+        public string Json { get; set; }
     }
 
     public class Positions

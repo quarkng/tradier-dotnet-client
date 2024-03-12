@@ -6,7 +6,13 @@ namespace Tradier.Client.Models.Account
     public class BalanceRootObject
     {
         [JsonProperty("balances")]
-        public Balances Balances { get; set; }
+        public BalancesWithJson Balances { get; set; }
+    }
+
+    public class BalancesWithJson : Balances
+    {
+        [JsonIgnore]
+        public string Json { get; set; }
     }
 
     public class Balances

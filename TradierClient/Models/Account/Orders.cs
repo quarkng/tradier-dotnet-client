@@ -9,7 +9,13 @@ namespace Tradier.Client.Models.Account
     public class OrdersRootobject
     {
         [JsonProperty("orders")]
-        public Orders Orders { get; set; }
+        public OrdersWithJson Orders { get; set; }
+    }
+
+    public class OrdersWithJson : Orders
+    {
+        [JsonIgnore]
+        public string Json { get; set; }
     }
 
     public class Orders

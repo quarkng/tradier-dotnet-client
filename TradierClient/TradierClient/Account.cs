@@ -16,6 +16,8 @@ namespace Tradier.Client
         private readonly Requests _requests;
         private readonly string _defaultAccountNumber;
 
+        public bool KeepJson { get; set; }
+
         /// <summary>
         /// Account Constructor
         /// </summary>
@@ -31,7 +33,13 @@ namespace Tradier.Client
         public async Task<Profile> GetUserProfile()
         {
             var response = await _requests.GetRequest("user/profile");
-            return JsonConvert.DeserializeObject<ProfileRootObject>(response).Profile;
+            var result = JsonConvert.DeserializeObject<ProfileRootObject>(response).Profile;
+
+            if (KeepJson && result != null)
+            {
+                result.Json = response;
+            }
+            return result;
         }
 
         /// <summary>
@@ -47,7 +55,14 @@ namespace Tradier.Client
             }
 
             var response = await _requests.GetRequest($"accounts/{accountNumber}/balances");
-            return JsonConvert.DeserializeObject<BalanceRootObject>(response).Balances;
+            var result = JsonConvert.DeserializeObject<BalanceRootObject>(response).Balances;
+
+            if (KeepJson && result != null)
+            {
+                result.Json = response;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -63,7 +78,13 @@ namespace Tradier.Client
             }
 
             var response = await _requests.GetRequest($"accounts/{accountNumber}/positions");
-            return JsonConvert.DeserializeObject<PositionsRootobject>(response).Positions;
+            var result = JsonConvert.DeserializeObject<PositionsRootobject>(response).Positions;
+
+            if (KeepJson && result != null)
+            {
+                result.Json = response;
+            }
+            return result;
         }
 
         /// <summary>
@@ -85,7 +106,13 @@ namespace Tradier.Client
         public async Task<History> GetHistory(string accountNumber, int page = 1, int limitPerPage = 25)
         {
             var response = await _requests.GetRequest($"accounts/{accountNumber}/history?page={page}&limit={limitPerPage}");
-            return JsonConvert.DeserializeObject<HistoryRootobject>(response).History;
+            var result = JsonConvert.DeserializeObject<HistoryRootobject>(response).History;
+
+            if (KeepJson && result != null)
+            {
+                result.Json = response;
+            }
+            return result;
         }
 
         /// <summary>
@@ -107,7 +134,13 @@ namespace Tradier.Client
         public async Task<GainLoss> GetGainLoss(string accountNumber, int page = 1, int limitPerPage = 25)
         {
             var response = await _requests.GetRequest($"accounts/{accountNumber}/gainloss?page={page}&limit={limitPerPage}");
-            return JsonConvert.DeserializeObject<GainLossRootobject>(response).GainLoss;
+            var result = JsonConvert.DeserializeObject<GainLossRootobject>(response).GainLoss;
+
+            if (KeepJson && result != null)
+            {
+                result.Json = response; 
+            }
+            return result;
         }
 
         /// <summary>
@@ -128,7 +161,15 @@ namespace Tradier.Client
             }
 
             var response = await _requests.GetRequest($"accounts/{accountNumber}/orders");
-            return JsonConvert.DeserializeObject<OrdersRootobject>(response).Orders;
+            var resultRoot = JsonConvert.DeserializeObject<OrdersRootobject>(response);
+
+            var result = resultRoot?.Orders ?? new OrdersWithJson { Json = response };
+
+            if (KeepJson)
+            {
+                result.Json = response;
+            }
+            return result;
         }
 
         /// <summary>
@@ -150,7 +191,8 @@ namespace Tradier.Client
         public async Task<Order> GetOrder(string accountNumber, int orderId)
         {
             var response = await _requests.GetRequest($"accounts/{accountNumber}/orders/{orderId}");
-            return JsonConvert.DeserializeObject<Orders>(response).Order.FirstOrDefault();
+            var result =  JsonConvert.DeserializeObject<Orders>(response).Order.FirstOrDefault();
+            return result;
         }
     }
 }

@@ -8,7 +8,13 @@ namespace Tradier.Client.Models.Account
     public class ProfileRootObject
     {
         [JsonProperty("profile")]
-        public Profile Profile { get; set; }
+        public ProfileWithJson Profile { get; set; }
+    }
+
+    public class ProfileWithJson : Profile
+    {
+        [JsonIgnore]
+        public string Json { get; set; }
     }
 
     public class Profile

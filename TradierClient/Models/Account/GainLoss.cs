@@ -8,7 +8,13 @@ namespace Tradier.Client.Models.Account
     public class GainLossRootobject
     {
         [JsonProperty("gainloss")]
-        public GainLoss GainLoss { get; set; }
+        public GainLossWithJson GainLoss { get; set; }
+    }
+
+    public class GainLossWithJson : GainLoss
+    {
+        [JsonIgnore]
+        public string Json { get; set; }
     }
 
     public class GainLoss
