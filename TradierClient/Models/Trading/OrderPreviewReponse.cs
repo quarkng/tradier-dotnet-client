@@ -62,4 +62,34 @@ namespace Tradier.Client.Models.Trading
         [JsonProperty("day_trades")]
         public int? DayTrades { get; set; }
     }
+
+    public class OrderPreviewResponseWithJson : OrderPreviewResponse
+    {
+        public string Json { get; set; }
+
+        internal OrderPreviewResponseWithJson(OrderPreviewResponse orderPrevResp, string json)
+        {
+            Status= orderPrevResp.Status;
+            Commision = orderPrevResp.Commision;
+            Cost = orderPrevResp.Cost;
+            Fees= orderPrevResp.Fees;
+            Symbol= orderPrevResp.Symbol;
+            Quantity= orderPrevResp.Quantity;
+            Side= orderPrevResp.Side;
+            Type= orderPrevResp.Type;
+            Duration= orderPrevResp.Duration;
+            Result= orderPrevResp.Result;
+            OrderCost= orderPrevResp.OrderCost;
+            MarginChange= orderPrevResp.MarginChange;
+            RequestDate= orderPrevResp.RequestDate;
+            ExtendedHours= orderPrevResp.ExtendedHours;
+            ClassOrder= orderPrevResp.ClassOrder;
+            Strategy= orderPrevResp.Strategy;
+            DayTrades= orderPrevResp.DayTrades;
+
+            Json = json;
+        }
+
+    }
+
 }

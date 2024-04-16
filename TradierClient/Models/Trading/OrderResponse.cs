@@ -6,10 +6,10 @@ namespace Tradier.Client.Models.Trading
     public class OrderResponseRootobject
     {
         [JsonProperty("order")]
-        public OrderReponse OrderReponse { get; set; }
+        public OrderResponse OrderReponse { get; set; }
     }
 
-    public class OrderReponse : IOrder
+    public class OrderResponse : IOrder
     {
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -20,4 +20,18 @@ namespace Tradier.Client.Models.Trading
         [JsonProperty("partner_id")]
         public string PartnerId { get; set; }
     }
+
+    public class OrderReponseWithJson : OrderResponse
+    {
+        public string Json { get; set; }
+
+        internal OrderReponseWithJson( OrderResponse orderResp, string json ) 
+        { 
+            Id = orderResp.Id;
+            Status= orderResp.Status;
+            PartnerId= orderResp.PartnerId;
+            Json = json;
+        }
+    }
+
 }
