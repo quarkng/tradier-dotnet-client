@@ -89,7 +89,8 @@ namespace Tradier.Client
                 { "symbol", symbol },
                 { "type", type },
                 { "duration", duration },
-                { "price", price.ToString() }
+                { "price", price.ToString() },
+                { "preview", preview.ToString() }
             };
 
             int index = 0;
@@ -170,6 +171,7 @@ namespace Tradier.Client
                 { "type", type },
                 { "duration", duration },
                 { "price", price.ToString() },
+                { "preview", preview.ToString() }
             };
 
             int index = 0;

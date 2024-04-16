@@ -77,6 +77,7 @@ namespace TradierClient.Test.Tests
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Status == "ok");
+            if (preview) Assert.IsTrue(((OrderPreviewResponse)result).ClassOrder == "multileg");
         }
 
         private List<(string, string, int)> StringToLegs(string str)
