@@ -10,6 +10,9 @@ namespace TradierClient.Test.Tests
 {
     public class MarketDataTests
     {
+        //private readonly bool _isSandbox = true;
+        private readonly bool _isSandbox = false;
+
         private Tradier.Client.TradierClient _client;
         private Settings _settings;
 
@@ -22,17 +25,22 @@ namespace TradierClient.Test.Tests
         [SetUp]
         public void Setup()
         {
-            // Use SandBox API Token
-            var sandboxApiToken = _settings.SandboxApiToken;
-            _client = new Tradier.Client.TradierClient(sandboxApiToken);
-
-            //Use Production API Token
-            //var apiToken = _settings.ApiToken;
-            //_client = new Tradier.Client.TradierClient(apiToken, true);
+            if (_isSandbox)
+            {   // Use SandBox API Token and endpoint
+                var sandboxApiToken = _settings.SandboxApiToken;
+                var sandboxAccountNumber = _settings.SandboxAccountNumber;
+                _client = new Tradier.Client.TradierClient(sandboxApiToken, sandboxAccountNumber);
+            }
+            else
+            {   //Use Production API Token and endpoint
+                var apiToken = _settings.ApiToken;
+                var accountNumber = _settings.AccountNumber;
+                _client = new Tradier.Client.TradierClient(apiToken, accountNumber, true);
+            }
         }
 
         [Test]
-        [TestCase("CKH", false)]
+        [TestCase("MSFT", false)]
         public async Task PostGetQuotesForSingleSymbol(string symbols, bool greeks)
         {
             var result = await _client.MarketData.PostGetQuotes(symbols, greeks);
@@ -76,7 +84,7 @@ namespace TradierClient.Test.Tests
         [Test]
         [TestCase("AAPL")]
         [TestCase("AAPL,GOOG")]
-        public async Task GetCompanyInfoTest(string symbols)
+        public async Task GetCompanyInfoTest(string symbols)  // Not availible in Paper Trade (Sandbox)
         {
             var result = await _client.MarketData.GetCompany(symbols);
 
@@ -88,7 +96,7 @@ namespace TradierClient.Test.Tests
         [Test]
         [TestCase("AAPL")]
         [TestCase("AAPL,GOOG")]
-        public async Task GetCorporateCalendarTest(string symbols)
+        public async Task GetCorporateCalendarTest(string symbols)  // Not availible in Paper Trade (Sandbox)
         {
             var result = await _client.MarketData.GetCorporateCalendars(symbols);
 

@@ -12,8 +12,8 @@ namespace TradierClient.Test.Tests
 {
     internal class AccountTests
     {
-        private readonly bool _isSandbox = true;
-        //private readonly bool _isSandbox = false;
+        //private readonly bool _isSandbox = true;
+        private readonly bool _isSandbox = false;
 
         private Tradier.Client.TradierClient _client;
         private Settings _settings;
