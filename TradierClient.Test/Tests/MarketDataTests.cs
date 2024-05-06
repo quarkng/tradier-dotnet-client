@@ -1,9 +1,11 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Tradier.Client;
+using Tradier.Client.Models.MarketData;
 using TradierClient.Test.Helpers;
 
 namespace TradierClient.Test.Tests
@@ -40,6 +42,29 @@ namespace TradierClient.Test.Tests
         }
 
         [Test]
+        [TestCase("SPY")]
+        public async Task GetTimeSales_5min(string symbol)
+        {
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
+            string interval = "5min";
+            DateTime start = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow.AddDays(-40), easternZone);
+            DateTime end = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
+            string filter = "open"; // 40 days of data available when filter is "open"
+
+            var result = await _client.MarketData.GetTimeSales(symbol, interval, start, end, filter);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Data.Count > 0);
+
+            var first = result.Data.First();
+            var last = result.Data.Last();
+
+            Assert.IsNotNull(first);
+            Assert.IsNotNull(last);
+        }
+
+        [Test]
         [TestCase("MSFT", false)]
         public async Task PostGetQuotesForSingleSymbol(string symbols, bool greeks)
         {
@@ -64,6 +89,47 @@ namespace TradierClient.Test.Tests
             Assert.NotZero(firstDay.Open);
             Assert.AreEqual(end.ToString("yyyy-MM-dd"), secondDay.Date);
             Assert.NotZero(secondDay.Open);
+        }
+
+        [Test]
+        [TestCase("SPY", 300)]
+        public async Task GetManyDayHistoricalQuotes(string symbol, int months)
+        {
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            DateTime nowEastern = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
+
+            string interval = "daily";
+            DateTime start = nowEastern.AddMonths(-1 * months);
+            DateTime end = nowEastern;
+
+            var result = await _client.MarketData.GetHistoricalQuotes(symbol, interval, start, end);
+            Assert.IsNotNull(result.Day);
+
+            var firstDay = result.Day.First();
+            var lastDay = result.Day.Last();
+            Assert.AreEqual(start.ToString("yyyy-MM-dd"), firstDay.Date);
+            Assert.NotZero(firstDay.Open);
+            Assert.AreEqual(end.ToString("yyyy-MM-dd"), lastDay.Date);
+            Assert.NotZero(lastDay.Open);
+        }
+
+        [Test]
+        [TestCase("SPY", "1993-01-25")]
+        public async Task GetManyWeeksHistoricalQuotes(string symbol, string fromDate)
+        {
+            string interval = "weekly";
+            DateTime start = DateTime.Parse(fromDate);
+            DateTime end = DateTime.Now;
+
+            var result = await _client.MarketData.GetHistoricalQuotes(symbol, interval, start, end);
+            Assert.IsNotNull(result.Day);
+
+            var firstDay = result.Day.First();
+            var lastDay = result.Day.Last();
+            Assert.AreEqual(start.ToString("yyyy-MM-dd"), firstDay.Date);
+            Assert.NotZero(firstDay.Open);
+            Assert.AreEqual(end.ToString("yyyy-MM-dd"), lastDay.Date);
+            Assert.NotZero(lastDay.Open);
         }
 
         [Test]
